@@ -11,7 +11,8 @@
 typedef struct __interpreter Interpreter;
 
 struct __interpreter {
-    Parser *parser;    
+    Parser *parser;
+    SYMT *symtable;
 };
 
 Interpreter *interpreter_init(const char *text);

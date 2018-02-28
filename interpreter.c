@@ -1,4 +1,5 @@
 #include "interpreter.h"
+#include "symtable.h"
 #include <string.h>
 
 Interpreter *interpreter_init(const char *text)
@@ -10,6 +11,7 @@ Interpreter *interpreter_init(const char *text)
     }
 
     interpreter->parser = parser_init(text);
+    interpreter->symtable = symt_init();
 
     return interpreter;
 }
@@ -17,11 +19,14 @@ Interpreter *interpreter_init(const char *text)
 void interpreter_destroy(Interpreter *interpreter)
 {
     parser_destroy(interpreter->parser);
+    symt_destroy(interpreter->symtable);
     free(interpreter);
 }
 
 int interprete(Interpreter *interpreter)
 {
     parse(interpreter->parser);
-    return visit(interpreter->parser->ast); 
+    visit(interpreter->parser->ast, interpreter->symtable);
+    print_symt(interpreter->symtable);
+    return 0;
 }

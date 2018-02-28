@@ -1,4 +1,5 @@
 #include "list.h"
+#include <stdlib.h>
 
 void add_list(LIST_ENTRY **HEAD, void *data)
 {
@@ -9,7 +10,9 @@ void add_list(LIST_ENTRY **HEAD, void *data)
         return;
     }
 
-    for (LIST_ENTRY ptr = *HEAD; ptr->next; ptr = ptr->next);
+    LIST_ENTRY *ptr;
+    for (ptr = *HEAD; ptr->next; ptr = ptr->next);
+    
     ptr->next = (LIST_ENTRY *) malloc(sizeof(LIST_ENTRY));
     ptr->next->data = data;
     ptr->next->next = NULL;

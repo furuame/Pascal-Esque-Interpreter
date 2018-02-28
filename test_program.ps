@@ -1,0 +1,11 @@
+BEGIN
+    a := 3;
+    b := 6;
+    c := a + b;
+    BEGIN
+        d := 5;
+        e := 9;
+        f := d + e + c;
+    END;
+    a := a + f + 3;
+END.

@@ -30,12 +30,14 @@ static token_t find_reserved_word(Reserved_word_table *table, \
 {
     for (int i = 0; i < table->num; i++) {
         char *cmp_reserved_word = (char *) table->words[i].value;
-        if (strcmp(cmp_reserved_word, text) == 0) 
+        if (strcmp(cmp_reserved_word, text) == 0) {
             return table->words[i];
+        }
     }
 
     /* It's a identifier */
-    token_t token = { .type = ID, .value = text};
+    /* TODO: strdup(text) needs to be freed */
+    token_t token = { .type = ID, .value = strdup(text)};
     return token;
 }
 
@@ -46,17 +48,40 @@ static int isDigit(char target)
     return 0;
 }
 
+static int isAlpha(char target)
+{
+    if ((target >= 'A' && target <= 'Z') ||
+        (target >= 'a' && target <= 'z'))
+        return 1;
+    return 0;
+}
+
+static int isAlphaDigit(char target)
+{
+   if (isDigit(target) || isAlpha(target))
+       return 1;
+   return 0;
+}
+
 static void advance(Lexer *lexer)
 {
     lexer->pos += 1;
     if (lexer->pos >= lexer->len) {
-        lexer->current_char = '\n';
+        lexer->current_char = EOF;
     } else {
         lexer->current_char = lexer->text[lexer->pos];
     }
 }
 
-static int integer(Lexer *lexer)
+static char peek(Lexer *lexer)
+{
+    int peek_pos = lexer->pos + 1;
+    if (peek_pos >= lexer->len)
+        return EOF;
+    return lexer->text[peek_pos];
+}
+
+int integer(Lexer *lexer)
 {
     char number[_AVAILABLE_DIGITS];
     int i = 0;
@@ -64,28 +89,42 @@ static int integer(Lexer *lexer)
     do {
         number[i++] = lexer->current_char;
         advance(lexer);
-    } while (lexer->current_char != '\n' && isDigit(lexer->current_char));
+    } while (lexer->current_char != EOF && isDigit(lexer->current_char));
     number[i] = '\0';
     
     return atoi(number);
 }
 
-static void skip_whitespace(Lexer *lexer)
+token_t id(Lexer *lexer)
+{
+    char text[_AVAILABLE_DIGITS];
+    int i = 0;
+
+    do {
+        text[i++] = lexer->current_char;
+        advance(lexer);
+    } while (lexer->current_char != EOF && isAlphaDigit(lexer->current_char));
+    text[i] = '\0';
+
+    return find_reserved_word(&lexer->RESERVED_WORDS, text);
+}
+
+void skip_whitespace_newline(Lexer *lexer)
 {
     do {
         advance(lexer);
-    } while (lexer->current_char == ' ');
+    } while (lexer->current_char == ' ' || lexer->current_char == '\n');
 }
 
 token_t get_next_token(Lexer *lexer)
 {
     token_t ret = {.type = NONE, .value = NULL};
 
-    if (lexer->current_char != '\n') {
-        if (lexer->current_char == ' ')
-            skip_whitespace(lexer);
+    if (lexer->current_char != EOF) {
+        if (lexer->current_char == ' ' || lexer->current_char == '\n')
+            skip_whitespace_newline(lexer);
 
-        if (lexer->current_char == '\n')
+        if (lexer->current_char == EOF)
             return ret;
 
         if (isDigit(lexer->current_char)) {
@@ -137,6 +176,30 @@ token_t get_next_token(Lexer *lexer)
             return ret;
         }
 
+        if (isAlpha(lexer->current_char)) {
+            return id(lexer);
+        }
+
+        if (lexer->current_char == ':' &&
+            peek(lexer) == '=') {
+            ret.type = ASSIGN;
+            advance(lexer);
+            advance(lexer);
+            return ret;
+        }
+
+        if (lexer->current_char == ';') {
+            ret.type = SEMI;
+            advance(lexer);
+            return ret;
+        }
+
+        if (lexer->current_char == '.') {
+            ret.type = DOT;
+            advance(lexer);
+            return ret;
+        }
+
         printf("interpreter.c: Unavailable char exists\n");
         exit(0);
     }
@@ -164,8 +227,8 @@ Lexer *lexer_init(const char *text)
     lexer->len = strlen(text);
     lexer->text = text;
     lexer->current_char = text[0];
-    lexer->current_token = get_next_token(lexer);
     init_reserved_word(&lexer->RESERVED_WORDS);
+    lexer->current_token = get_next_token(lexer);
     return lexer;
 }
 

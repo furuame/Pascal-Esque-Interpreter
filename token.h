@@ -19,6 +19,7 @@ typedef enum {
     /* Identifier */
     ID,
     /* Special Characters */
+    ASSIGN,
     SEMI,
     DOT,
     LPAREN,
