@@ -44,7 +44,7 @@ static void skip_whitespace(Lexer *lexer)
 
 token_t get_next_token(Lexer *lexer)
 {
-    token_t ret = {.type = NONE, .value = '\0'};
+    token_t ret = {.type = NONE, .value = NULL};
 
     if (lexer->current_char != '\n') {
         if (lexer->current_char == ' ')
@@ -54,55 +54,49 @@ token_t get_next_token(Lexer *lexer)
             return ret;
 
         if (isDigit(lexer->current_char)) {
-            ret.value = integer(lexer);
+            ret.value = malloc(sizeof(int));
+            * (int *) ret.value = integer(lexer);
             ret.type = INTEGER;
             return ret;
         }
 
         if (lexer->current_char == '+') {
-            ret.value = '+';
             ret.type = PLUS;
             advance(lexer);
             return ret;
         }
 
         if (lexer->current_char == '-') {
-            ret.value = '-';
             ret.type = MINUS;
             advance(lexer);
             return ret;
         }
 
         if (lexer->current_char == '*') {
-            ret.value = '*';
             ret.type = MULTIPLY;
             advance(lexer);
             return ret;
         }
 
         if (lexer->current_char == '/') {
-            ret.value = '/';
             ret.type = DIVIDE;
             advance(lexer);
             return ret;
         }
 
         if (lexer->current_char == '(') {
-            ret.value = '(';
             ret.type = LPAREN;
             advance(lexer);
             return ret;
         }
 
         if (lexer->current_char == ')') {
-            ret.value = ')';
             ret.type = RPAREN;
             advance(lexer);
             return ret;
         }
 
         if (lexer->current_char == '^') {
-            ret.value = '^';
             ret.type = POWER;
             advance(lexer);
             return ret;

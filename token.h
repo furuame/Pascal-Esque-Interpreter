@@ -29,7 +29,7 @@ typedef struct __token token_t;
 
 struct __token {
     TYPE type;
-    int value;
+    void *value;
 };
 
 #endif

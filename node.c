@@ -35,7 +35,7 @@ int visit_BinNode(BinNode_t *node)
 
 int visit_NumNode(NumNode_t *node)
 {
-    return node->operand.value;
+    return * (int *) node->operand.value;
 }
 
 int visit_UnaryNode(UnaryNode_t *node)
@@ -75,6 +75,10 @@ void free_node(void *node)
 
     if (*((AST_NODE_TYPE *) node) == NODE_UNARY_OP) {
         free_node(((UnaryNode_t *) node)->expr);
+    }
+
+    if (*((AST_NODE_TYPE *) node) == NODE_NUM) {
+        free(((NumNode_t *) node)->operand.value);
     }
 
     free(node);
