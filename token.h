@@ -16,6 +16,7 @@ typedef enum {
     /* Reserved Words */
     BEGIN,
     END,
+    /* Identifier */
     ID,
     /* Special Characters */
     SEMI,

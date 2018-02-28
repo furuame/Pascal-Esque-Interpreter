@@ -4,6 +4,41 @@
 #include "token.h"
 #include "lexer.h"
 
+static void add_reserved_word(Reserved_word_table *table, \
+                              token_t token)
+{
+    table->words[table->num] = token;
+    table->num += 1;
+}
+
+static void init_reserved_word(Reserved_word_table *table)
+{
+    table->num = 0;
+
+    token_t token = { .type = NONE, .value = NULL};
+
+    /* Add Reserved Words here */
+    token.type = BEGIN; token.value = "BEGIN";
+    add_reserved_word(table, token);
+
+    token.type = END; token.value = "END";
+    add_reserved_word(table, token);
+}
+
+static token_t find_reserved_word(Reserved_word_table *table, \
+                                  char *text)
+{
+    for (int i = 0; i < table->num; i++) {
+        char *cmp_reserved_word = (char *) table->words[i].value;
+        if (strcmp(cmp_reserved_word, text) == 0) 
+            return table->words[i];
+    }
+
+    /* It's a identifier */
+    token_t token = { .type = ID, .value = text};
+    return token;
+}
+
 static int isDigit(char target)
 {
     if (target >= '0' && target <= '9')
@@ -130,6 +165,7 @@ Lexer *lexer_init(const char *text)
     lexer->text = text;
     lexer->current_char = text[0];
     lexer->current_token = get_next_token(lexer);
+    init_reserved_word(&lexer->RESERVED_WORDS);
     return lexer;
 }
 

@@ -4,6 +4,14 @@
 #include "token.h"
 
 #define _AVAILABLE_DIGITS 100
+#define _MAX_RESERVED_WORDS 20
+
+typedef struct __reserved_word_table Reserved_word_table;
+
+struct __reserved_word_table {
+    token_t words[_MAX_RESERVED_WORDS];
+    int num;
+};
 
 typedef struct __lexer Lexer;
 
@@ -13,6 +21,7 @@ struct __lexer {
     const char *text;
     char current_char;
     token_t current_token;
+    Reserved_word_table RESERVED_WORDS;
 };
 
 Lexer *lexer_init(const char *text);
