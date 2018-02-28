@@ -24,8 +24,6 @@ void free_list(LIST_ENTRY *HEAD)
     LIST_ENTRY *NEXT = NULL;
     while (HEAD) {
         NEXT = HEAD->next;
-        /* TODO: Specific free function for data */
-        free(HEAD->data);
         free(HEAD);
         HEAD = NEXT;
     }

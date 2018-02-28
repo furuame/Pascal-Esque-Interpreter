@@ -1,6 +1,7 @@
 #include "node.h"
 #include "token.h"
 #include "symtable.h"
+#include "list.h"
 
 /* return n ^ k */
 int mypow(int n, int k)
@@ -114,6 +115,13 @@ void free_node(void *node)
 
     if (*((AST_NODE_TYPE *) node) == NODE_VAR) {
         free(((VarNode_t *) node)->operand.value);
+    }
+    
+    if (*((AST_NODE_TYPE *) node) == NODE_COMPOUND) {
+        for (LIST_ENTRY *ptr = ((CompoundNode_t *) node)->statement_list; ptr; ptr = ptr->next) {
+            free_node(ptr->data);
+        }
+        free_list(((CompoundNode_t *) node)->statement_list);
     }
 
     free(node);
