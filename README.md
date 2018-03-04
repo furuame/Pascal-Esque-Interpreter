@@ -20,12 +20,13 @@ BEGIN
         f := d + e + c;
     END;
     a := a + f + 3;
+    a := a div 2
 END.
 ```
 
 ## Result
 ```
-a: 29
+a: 14
 b: 6
 c: 9
 d: 5
