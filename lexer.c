@@ -23,6 +23,9 @@ static void init_reserved_word(Reserved_word_table *table)
 
     token.type = END; token.value = "END";
     add_reserved_word(table, token);
+
+    token.type = INTEGER_DIVIDE; token.value = "div";
+    add_reserved_word(table, token);
 }
 
 static token_t find_reserved_word(Reserved_word_table *table, \
@@ -152,11 +155,13 @@ token_t get_next_token(Lexer *lexer)
             return ret;
         }
 
+        /*
         if (lexer->current_char == '/') {
             ret.type = DIVIDE;
             advance(lexer);
             return ret;
         }
+        */
 
         if (lexer->current_char == '(') {
             ret.type = LPAREN;

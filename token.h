@@ -11,7 +11,8 @@ typedef enum {
     PLUS,
     MINUS,
     MULTIPLY,
-    DIVIDE,
+    INTEGER_DIVIDE,
+    FLOAT_DIVIDE,
     POWER,
     /* Reserved Words */
     BEGIN,

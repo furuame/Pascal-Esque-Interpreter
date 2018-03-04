@@ -138,8 +138,8 @@ static void *term(Parser *parser)
     void *node = factor(parser);
     Lexer *lexer = parser->lexer;
 
-    while (lexer->current_token.type == MULTIPLY || \
-           lexer->current_token.type == DIVIDE   || \
+    while (lexer->current_token.type == MULTIPLY         || \
+           lexer->current_token.type == INTEGER_DIVIDE   || \
            lexer->current_token.type == POWER) {
         
         token_t current_token = lexer->current_token;
@@ -148,8 +148,8 @@ static void *term(Parser *parser)
             match(lexer, MULTIPLY);
         }
 
-        if (current_token.type == DIVIDE) {
-            match(lexer, DIVIDE);
+        if (current_token.type == INTEGER_DIVIDE) {
+            match(lexer, INTEGER_DIVIDE);
         }
 
         if (current_token.type == POWER) {

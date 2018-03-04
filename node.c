@@ -25,7 +25,7 @@ int visit_BinNode(BinNode_t *node, SYMT *symtable)
             return visit(node->left, symtable) - visit(node->right, symtable);
         case MULTIPLY:
             return visit(node->left, symtable) * visit(node->right, symtable);
-        case DIVIDE:
+        case INTEGER_DIVIDE:
             return visit(node->left, symtable) / visit(node->right, symtable);
         case POWER:
             return mypow(visit(node->left, symtable), visit(node->right, symtable));
