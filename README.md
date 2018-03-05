@@ -11,22 +11,22 @@ This is a simple Pascal-like interpreter referenced from [Ruslan's Blog](https:/
 ## Test Program to interpreter
 ```
 BEGIN
-    a := 3;
+    _a := 3;
     b := 6;
-    c := a + b;
+    c := _a + b;
     BEGIN
         d := 5;
         e := 9;
         f := d + e + c;
     END;
-    a := a + f + 3;
-    a := a div 2
+    _a := _a + f + 3;
+    _a := _a div 2
 END.
 ```
 
 ## Result
 ```
-a: 14
+_a: 14
 b: 6
 c: 9
 d: 5
