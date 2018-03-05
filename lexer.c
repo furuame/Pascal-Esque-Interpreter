@@ -59,9 +59,10 @@ static int isAlpha(char target)
     return 0;
 }
 
-static int isAlphaDigit(char target)
+static int isLegalCharacter(char target)
 {
-   if (isDigit(target) || isAlpha(target))
+   if (isDigit(target) || isAlpha(target) || \
+       target == '_')
        return 1;
    return 0;
 }
@@ -106,7 +107,7 @@ token_t id(Lexer *lexer)
     do {
         text[i++] = lexer->current_char;
         advance(lexer);
-    } while (lexer->current_char != EOF && isAlphaDigit(lexer->current_char));
+    } while (lexer->current_char != EOF && isLegalCharacter(lexer->current_char));
     text[i] = '\0';
 
     return find_reserved_word(&lexer->RESERVED_WORDS, text);
@@ -181,7 +182,8 @@ token_t get_next_token(Lexer *lexer)
             return ret;
         }
 
-        if (isAlpha(lexer->current_char)) {
+        if (isAlpha(lexer->current_char) || \
+            lexer->current_char == '_') {
             return id(lexer);
         }
 
