@@ -113,8 +113,8 @@ static void *factor(Parser *parser)
         node->op = current_token;
         node->expr = factor(parser);
         return node;
-    } else if (current_token.type == INTEGER) {
-        match(lexer, INTEGER);
+    } else if (current_token.type == INTEGER_CONST) {
+        match(lexer, INTEGER_CONST);
         NumNode_t *node = (NumNode_t *) malloc(sizeof(NumNode_t));
         node->type = NODE_NUM;
         node->operand = current_token;

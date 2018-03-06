@@ -5,14 +5,15 @@
 #include <stdio.h>
 
 typedef enum {
-    /* Operand */
-    INTEGER,
+    /* Constant */
+    INTEGER_CONST,
+    REAL_CONST,
     /* Operator */
     PLUS,
     MINUS,
     MULTIPLY,
     INTEGER_DIVIDE,
-    FLOAT_DIVIDE,
+    REAL_DIVIDE,
     POWER,
     /* Reserved Words */
     BEGIN,

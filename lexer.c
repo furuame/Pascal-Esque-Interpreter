@@ -85,7 +85,7 @@ static char peek(Lexer *lexer)
     return lexer->text[peek_pos];
 }
 
-int integer(Lexer *lexer)
+token_t integer(Lexer *lexer)
 {
     char number[_AVAILABLE_DIGITS];
     int i = 0;
@@ -96,7 +96,11 @@ int integer(Lexer *lexer)
     } while (lexer->current_char != EOF && isDigit(lexer->current_char));
     number[i] = '\0';
     
-    return atoi(number);
+    token_t ret = {.type = NONE, .value = NULL};
+    ret.value = malloc(sizeof(int));
+    * (int *) ret.value = atoi(number);
+    ret.type = INTEGER_CONST;
+    return ret;
 }
 
 token_t id(Lexer *lexer)
@@ -132,10 +136,7 @@ token_t get_next_token(Lexer *lexer)
             return ret;
 
         if (isDigit(lexer->current_char)) {
-            ret.value = malloc(sizeof(int));
-            * (int *) ret.value = integer(lexer);
-            ret.type = INTEGER;
-            return ret;
+            return integer(lexer);
         }
 
         if (lexer->current_char == '+') {
