@@ -1,17 +1,21 @@
 #ifndef SYMTABLE_H_
 #define SYMTABLE_H_
 
+#include "token.h"
+
 #define _MAX_SYMT_ENTRY 100
 
+/*
 typedef enum {
     TYPE_INTEGER,
     TYPE_FLOAT
 } VARIABLE_TYPE;
+*/
 
 typedef struct __symbol_table_entry SYMT_ENTRY;
 struct __symbol_table_entry {
    char *name;
-   //VARIABLE_TYPE type;
+   TYPE type;
    int value;
 };
 
@@ -21,6 +25,7 @@ struct __symbol_table {
     int num;
 };
 
+void add_symt_entry(SYMT *symtable, char *text, TYPE type);
 void set_symt_value(SYMT *symtable, \
                     char *text, /*VARIABLE_TYPE type,*/ \
                     int value);
