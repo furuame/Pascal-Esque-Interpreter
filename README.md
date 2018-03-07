@@ -10,6 +10,11 @@ This is a simple Pascal-like interpreter referenced from [Ruslan's Blog](https:/
 
 ## Test Program to interpreter
 ```
+PROGRAM test_program;
+VAR
+    _a, b, c : INTEGER;
+    d, e, f : INTEGER;
+
 BEGIN
     _a := 3;
     b := 6;
