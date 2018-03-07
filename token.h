@@ -5,6 +5,9 @@
 #include <stdio.h>
 
 typedef enum {
+    /* DECLARATION */
+    INTEGER_DECL,
+    REAL_DECL,
     /* Constant */
     INTEGER_CONST,
     REAL_CONST,
@@ -17,6 +20,7 @@ typedef enum {
     POWER,
     /* Reserved Words */
     PROGRAM,
+    VAR,
     BEGIN,
     END,
     /* Identifier */
@@ -27,6 +31,8 @@ typedef enum {
     DOT,
     LPAREN,
     RPAREN,
+    COMMA,
+    COLON,
     NONE
 } TYPE;
 

@@ -20,11 +20,20 @@ static void init_reserved_word(Reserved_word_table *table)
     /* Add Reserved Words here */
     token.type = PROGRAM; token.value = "PROGRAM";
     add_reserved_word(table, token);
+   
+    token.type = VAR; token.value = "VAR";
+    add_reserved_word(table, token);
     
     token.type = BEGIN; token.value = "BEGIN";
     add_reserved_word(table, token);
 
     token.type = END; token.value = "END";
+    add_reserved_word(table, token);
+    
+    token.type = INTEGER_DECL; token.value = "INTEGER";
+    add_reserved_word(table, token);
+
+    token.type = REAL_DECL; token.value = "REAL";
     add_reserved_word(table, token);
 
     token.type = INTEGER_DIVIDE; token.value = "div";
@@ -241,6 +250,18 @@ token_t get_next_token(Lexer *lexer)
 
         if (lexer->current_char == '.') {
             ret.type = DOT;
+            advance(lexer);
+            return ret;
+        }
+
+        if (lexer->current_char == ',') {
+            ret.type = COMMA;
+            advance(lexer);
+            return ret;
+        }
+
+        if (lexer->current_char == ':') {
+            ret.type = COLON;
             advance(lexer);
             return ret;
         }
