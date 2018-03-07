@@ -18,6 +18,9 @@ static void init_reserved_word(Reserved_word_table *table)
     token_t token = { .type = NONE, .value = NULL};
 
     /* Add Reserved Words here */
+    token.type = PROGRAM; token.value = "PROGRAM";
+    add_reserved_word(table, token);
+    
     token.type = BEGIN; token.value = "BEGIN";
     add_reserved_word(table, token);
 

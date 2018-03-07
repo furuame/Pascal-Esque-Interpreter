@@ -18,6 +18,18 @@ static void *empty(Parser *parser);
 static void *program(Parser *parser)
 {
     Lexer *lexer = parser->lexer;
+    match(lexer, PROGRAM);
+    
+    token_t program_name = lexer->current_token;
+    printf("\n===== Parsing \"%s\" =====\n\n", (char *) program_name.value);
+    
+    match(lexer, ID);
+
+    printf("===== Source Code =====\n");
+    printf("%s", (char *) (lexer->current_char == '\n' ? lexer->text + lexer->pos + 1 : lexer->text + lexer->pos));
+    printf("=======================\n\n");
+
+    match(lexer, SEMI);
     void *node = compound_statement(parser);
     match(lexer, DOT);
     return node;

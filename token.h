@@ -16,6 +16,7 @@ typedef enum {
     REAL_DIVIDE,
     POWER,
     /* Reserved Words */
+    PROGRAM,
     BEGIN,
     END,
     /* Identifier */
