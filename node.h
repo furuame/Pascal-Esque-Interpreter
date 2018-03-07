@@ -12,18 +12,34 @@ typedef enum {
     NODE_COMPOUND,
     NODE_ASSIGN,
     NODE_VAR,
-    NODE_NOP
+    NODE_NOP,
+    NODE_BLOCK,
+    NODE_VAR_DECL
 } AST_NODE_TYPE;
-
-typedef struct __nop_node NopNode_t;
-struct __nop_node {
-    AST_NODE_TYPE type;
-};
 
 typedef struct __compound_node CompoundNode_t;
 struct __compound_node {
     AST_NODE_TYPE type;
     LIST_ENTRY *statement_list;
+};
+
+/* element in declaration_list is still a list of VarNode */
+typedef struct __var_decl_node VarDeclNode_t;
+struct __var_decl_node {
+    AST_NODE_TYPE type;
+    LIST_ENTRY *declaration_list;
+};
+
+typedef struct __block_node BlockNode_t;
+struct __block_node {
+    AST_NODE_TYPE type;
+    VarDeclNode_t *declarations;   
+    CompoundNode_t *compound_statement;
+};
+
+typedef struct __nop_node NopNode_t;
+struct __nop_node {
+    AST_NODE_TYPE type;
 };
 
 typedef struct __var_node VarNode_t;

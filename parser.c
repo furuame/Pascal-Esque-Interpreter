@@ -4,6 +4,10 @@
 #include "node.h"
 #include "list.h"
 
+static void *block(Parser *parser);
+static TYPE type_spec(Parser *parser);
+static void *declarations(Parser *parser);
+static void *variable_declaration(Parser *parser);
 static void *factor(Parser *parser);
 static void *term(Parser *parser);
 static void *expr(Parser *parser);
@@ -30,9 +34,81 @@ static void *program(Parser *parser)
     printf("=======================\n\n");
 
     match(lexer, SEMI);
-    void *node = compound_statement(parser);
+    void *node = block(parser);
     match(lexer, DOT);
     return node;
+}
+
+static void *block(Parser *parser)
+{
+    BlockNode_t *node = (BlockNode_t *) malloc(sizeof(BlockNode_t));
+    node->type = NODE_BLOCK;
+    node->declarations = declarations(parser);
+    node->compound_statement = compound_statement(parser);
+    return node;
+}
+
+static void *declarations(Parser *parser)
+{
+    Lexer *lexer = parser->lexer;
+    VarDeclNode_t *node = NULL; 
+    LIST_ENTRY *HEAD = NULL;
+
+    if (lexer->current_token.type == VAR) {
+        match(lexer, VAR);
+        do {
+            add_list(&HEAD, variable_declaration(parser));
+            match(lexer, SEMI);
+        } while (lexer->current_token.type == ID);
+
+        node = (VarDeclNode_t *) malloc(sizeof(VarDeclNode_t));
+        node->type = NODE_VAR_DECL;
+        node->declaration_list = HEAD;
+    }
+    return node;
+}
+
+static TYPE type_spec(Parser *parser)
+{
+    Lexer *lexer = parser->lexer;
+
+    if (lexer->current_token.type == INTEGER_DECL) {
+        match(lexer, INTEGER_DECL);
+        return INTEGER_DECL;
+    } else if (lexer->current_token.type == REAL_DECL) {
+        match(lexer, REAL_DECL);
+        return REAL_DECL;
+    }
+    return NONE;
+}
+
+static void *variable_declaration(Parser *parser)
+{
+    Lexer *lexer = parser->lexer;
+    LIST_ENTRY *HEAD = NULL;
+
+    do {
+        VarNode_t *node = (VarNode_t *) malloc(sizeof(VarNode_t));
+        node->operand = lexer->current_token;
+        node->type = NODE_VAR;
+        match(lexer, ID);
+        add_list(&HEAD, node);
+    } while (lexer->current_token.type == COMMA && (match(lexer, COMMA) || 1));
+
+    match(lexer, COLON);
+
+    TYPE type = type_spec(parser);
+    if (type == NONE) {
+        printf("Not availabe TYPE declaration\n");
+        exit(0);
+    }
+
+    for (LIST_ENTRY *ptr = HEAD; ptr; ptr = ptr->next) {
+        VarNode_t *node = (VarNode_t *) ptr->data;
+        node->operand.type = type;
+    }
+
+    return HEAD;
 }
 
 static void *compound_statement(Parser *parser)

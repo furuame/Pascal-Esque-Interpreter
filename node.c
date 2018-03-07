@@ -35,6 +35,27 @@ int visit_BinNode(BinNode_t *node, SYMT *symtable)
     }
 }
 
+int visit_VarDeclNode(VarDeclNode_t *node, SYMT *symtable)
+{
+    LIST_ENTRY *HEAD = node->declaration_list;
+    
+    for (LIST_ENTRY *outer = HEAD; outer; outer = outer->next) {
+        for (LIST_ENTRY *inner = outer->data; inner; inner = inner->next) {
+            VarNode_t *var = (VarNode_t *) inner->data;
+            add_symt_entry(symtable, var->operand.value, var->operand.type);
+        }
+    }
+
+    return 0;
+}
+
+int visit_BlockNode(BlockNode_t *node, SYMT *symtable)
+{
+    if (node->declarations) visit(node->declarations, symtable);
+    visit(node->compound_statement, symtable);
+    return 0;
+}
+
 int visit_NumNode(NumNode_t *node)
 {
     return * (int *) node->operand.value;
@@ -65,8 +86,8 @@ int visit_CompoundNode(CompoundNode_t *node, SYMT *symtable)
 
 int visit_AssignNode(AssignNode_t *node, SYMT *symtable)
 {
-    int ret = visit(node->expr, symtable);
-    set_symt_value(symtable, (char *) node->var->operand.value, ret);
+    int value = visit(node->expr, symtable);
+    set_symt_value(symtable, (char *) node->var->operand.value, value);
     return 0;
 }
 
@@ -90,6 +111,10 @@ int visit(void *node, SYMT *symtable)
             return visit_AssignNode((AssignNode_t *) node, symtable);
         case NODE_VAR:
             return visit_VarNode((VarNode_t *) node, symtable);
+        case NODE_BLOCK:
+            return visit_BlockNode((BlockNode_t *) node, symtable);
+        case NODE_VAR_DECL:
+            return visit_VarDeclNode((VarDeclNode_t *) node, symtable);
         case NODE_NOP:
             return 0;
         default:
@@ -122,6 +147,19 @@ void free_node(void *node)
             free_node(ptr->data);
         }
         free_list(((CompoundNode_t *) node)->statement_list);
+    }
+
+    if (*((AST_NODE_TYPE *) node) == NODE_BLOCK) {
+        free_node(((BlockNode_t *) node)->declarations);
+        free_node(((BlockNode_t *) node)->compound_statement);
+    }
+
+    if (*((AST_NODE_TYPE *) node) == NODE_VAR_DECL) {
+        for (LIST_ENTRY *outer = ((VarDeclNode_t *) node)->declaration_list; outer; outer = outer->next) {
+            for (LIST_ENTRY *inner = outer->data; inner; inner = inner->next) {
+                free_node(inner->data);
+            }
+        }
     }
 
     free(node);
