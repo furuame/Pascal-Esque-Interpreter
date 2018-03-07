@@ -85,6 +85,40 @@ static char peek(Lexer *lexer)
     return lexer->text[peek_pos];
 }
 
+token_t scalar(Lexer *lexer)
+{
+    char number[_AVAILABLE_DIGITS];
+    int i = 0;
+    token_t ret;
+
+    /* 4 bytes used to store a integer or floating-point */
+    ret.value = malloc(4);
+
+    do {
+        number[i++] = lexer->current_char;
+        advance(lexer);
+    } while (lexer->current_char != EOF && isDigit(lexer->current_char));
+
+    if (lexer->current_char == '.') {
+        number[i++] = lexer->current_char;
+        advance(lexer);
+
+        while (lexer->current_char != EOF && \
+               isDigit(lexer->current_char)) {
+            number[i++] = lexer->current_char;
+            advance(lexer);
+        }
+
+        * (float *) ret.value = (float) atof(number);
+        ret.type = REAL_CONST;
+    } else {
+        * (int *) ret.value = atoi(number);
+        ret.type = INTEGER_CONST;
+    }
+
+    return ret;
+}
+
 token_t integer(Lexer *lexer)
 {
     char number[_AVAILABLE_DIGITS];
@@ -136,7 +170,7 @@ token_t get_next_token(Lexer *lexer)
             return ret;
 
         if (isDigit(lexer->current_char)) {
-            return integer(lexer);
+            return scalar(lexer);
         }
 
         if (lexer->current_char == '+') {
