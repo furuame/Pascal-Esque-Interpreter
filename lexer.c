@@ -272,7 +272,7 @@ token_t get_next_token(Lexer *lexer)
     return ret;
 }
 
-void match(Lexer *lexer, TYPE type)
+int match(Lexer *lexer, TYPE type)
 {
     if (lexer->current_token.type == type) {
         lexer->current_token = get_next_token(lexer);
@@ -280,6 +280,7 @@ void match(Lexer *lexer, TYPE type)
         printf("interpreter.c: Failed to match rules\n");
         exit(0);
     }
+    return 0;
 }
 
 Lexer *lexer_init(const char *text)

@@ -27,6 +27,6 @@ struct __lexer {
 Lexer *lexer_init(const char *text);
 void lexer_destroy(Lexer *lexer);
 token_t get_next_token(Lexer *lexer);
-void match(Lexer *lexer, TYPE type);
+int match(Lexer *lexer, TYPE type);
 
 #endif
