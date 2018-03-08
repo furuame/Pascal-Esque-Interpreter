@@ -170,11 +170,25 @@ void skip_whitespace_newline(Lexer *lexer)
     } while (lexer->current_char == ' ' || lexer->current_char == '\n');
 }
 
+void skip_comment(Lexer *lexer)
+{
+    while (lexer->current_char != '}')
+        advance(lexer);
+    advance(lexer);
+}
+
 token_t get_next_token(Lexer *lexer)
 {
     token_t ret = {.type = NONE, .value = NULL};
 
     if (lexer->current_char != EOF) {
+        if (lexer->current_char == ' ' || lexer->current_char == '\n')
+            skip_whitespace_newline(lexer);
+        
+        if (lexer->current_char == '{')
+            skip_comment(lexer);
+       
+        /* Duplicate skip_whitespace_newline is needed */
         if (lexer->current_char == ' ' || lexer->current_char == '\n')
             skip_whitespace_newline(lexer);
 
