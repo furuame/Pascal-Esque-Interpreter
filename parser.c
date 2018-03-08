@@ -207,7 +207,13 @@ static void *factor(Parser *parser)
         node->type = NODE_NUM;
         node->operand = current_token;
         return node;
-    } else if (current_token.type == LPAREN) {
+    } else if (current_token.type == REAL_CONST) {
+        match(lexer, REAL_CONST);
+        NumNode_t *node = (NumNode_t *) malloc(sizeof(NumNode_t));
+        node->type = NODE_NUM;
+        node->operand = current_token;
+        return node;
+    }else if (current_token.type == LPAREN) {
         match(lexer, LPAREN);
         void *node = expr(parser);
         match(lexer, RPAREN);
