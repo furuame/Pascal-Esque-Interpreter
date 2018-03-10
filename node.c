@@ -159,7 +159,9 @@ void free_node(void *node)
             for (LIST_ENTRY *inner = outer->data; inner; inner = inner->next) {
                 free_node(inner->data);
             }
+            free_list(outer->data);
         }
+        free_list(((VarDeclNode_t *) node)->declaration_list);
     }
 
     free(node);
