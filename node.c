@@ -49,6 +49,13 @@ int visit_VarDeclNode(VarDeclNode_t *node, SYMT *symtable)
     return 0;
 }
 
+int visit_ProgramNode(ProgramNode_t *node, SYMT *symtable)
+{
+    printf("Start traversing %s's AST ... \n\n", (char *) node->program.value);
+    visit(node->block, symtable);
+    return 0;
+}
+
 int visit_BlockNode(BlockNode_t *node, SYMT *symtable)
 {
     if (node->declarations) visit(node->declarations, symtable);
@@ -99,6 +106,8 @@ int visit_VarNode(VarNode_t *node, SYMT *symtable)
 int visit(void *node, SYMT *symtable)
 {
     switch (*((AST_NODE_TYPE *) node)) {
+        case NODE_PROGRAM:
+            return visit_ProgramNode((ProgramNode_t *) node, symtable);
         case NODE_NUM:
             return visit_NumNode((NumNode_t *) node);
         case NODE_BINARY_OP:
@@ -141,12 +150,22 @@ void free_node(void *node)
     if (*((AST_NODE_TYPE *) node) == NODE_VAR) {
         free(((VarNode_t *) node)->operand.value);
     }
+
+    if (*((AST_NODE_TYPE *) node) == NODE_ASSIGN) {
+        free_node(((AssignNode_t *) node)->var);
+        free_node(((AssignNode_t *) node)->expr);
+    }
     
     if (*((AST_NODE_TYPE *) node) == NODE_COMPOUND) {
         for (LIST_ENTRY *ptr = ((CompoundNode_t *) node)->statement_list; ptr; ptr = ptr->next) {
             free_node(ptr->data);
         }
         free_list(((CompoundNode_t *) node)->statement_list);
+    }
+
+    if (*((AST_NODE_TYPE *) node) == NODE_PROGRAM) {
+        free(((ProgramNode_t *) node)->program.value);
+        free_node(((ProgramNode_t *) node)->block);
     }
 
     if (*((AST_NODE_TYPE *) node) == NODE_BLOCK) {

@@ -21,7 +21,8 @@ int main(int argc, char *argv[])
     }
 
     fread(text, sizeof(char), MAX_STRING_LEN, fin);
-
+    
+    fclose(fin);
     //fgets(text, MAX_STRING_LEN, stdin);
 
     Interpreter *foo = interpreter_init(text);

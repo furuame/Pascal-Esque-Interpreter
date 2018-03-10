@@ -69,7 +69,7 @@ SYMT *symt_init(void)
 
 void symt_destroy(SYMT *symtable)
 {
-    if (symtable) free(symtable);
+    free(symtable);
 }
 
 void print_symt(SYMT *symtable)

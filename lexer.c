@@ -51,7 +51,6 @@ static token_t find_reserved_word(Reserved_word_table *table, \
     }
 
     /* It's a identifier */
-    /* TODO: strdup(text) needs to be freed */
     token_t token = { .type = ID, .value = strdup(text)};
     return token;
 }

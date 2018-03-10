@@ -24,9 +24,10 @@ static void *program(Parser *parser)
     Lexer *lexer = parser->lexer;
     match(lexer, PROGRAM);
     
-    token_t program_name = lexer->current_token;
-    printf("\n===== Parsing \"%s\" =====\n\n", (char *) program_name.value);
-    
+    ProgramNode_t *node = (ProgramNode_t *) malloc(sizeof(ProgramNode_t));
+    node->type = NODE_PROGRAM;
+    node->program = lexer->current_token;
+
     match(lexer, ID);
 
     printf("===== Source Code =====\n");
@@ -34,7 +35,7 @@ static void *program(Parser *parser)
     printf("=======================\n\n");
 
     match(lexer, SEMI);
-    void *node = block(parser);
+    node->block = block(parser);
     match(lexer, DOT);
     return node;
 }
@@ -311,6 +312,7 @@ Parser *parser_init(const char *text)
 void parser_destroy(Parser *parser)
 {
    if (parser->ast) free_node(parser->ast);
+   lexer_destroy(parser->lexer);
    free(parser);
 }
 

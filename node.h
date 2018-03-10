@@ -14,7 +14,8 @@ typedef enum {
     NODE_VAR,
     NODE_NOP,
     NODE_BLOCK,
-    NODE_VAR_DECL
+    NODE_VAR_DECL,
+    NODE_PROGRAM
 } AST_NODE_TYPE;
 
 typedef struct __compound_node CompoundNode_t;
@@ -35,6 +36,13 @@ struct __block_node {
     AST_NODE_TYPE type;
     VarDeclNode_t *declarations;   
     CompoundNode_t *compound_statement;
+};
+
+typedef struct __program_node ProgramNode_t;
+struct __program_node {
+    AST_NODE_TYPE type;
+    BlockNode_t *block;
+    token_t program;
 };
 
 typedef struct __nop_node NopNode_t;

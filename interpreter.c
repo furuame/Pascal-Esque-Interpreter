@@ -18,8 +18,8 @@ Interpreter *interpreter_init(const char *text)
 
 void interpreter_destroy(Interpreter *interpreter)
 {
-    parser_destroy(interpreter->parser);
     symt_destroy(interpreter->symtable);
+    parser_destroy(interpreter->parser);
     free(interpreter);
 }
 
