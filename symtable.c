@@ -21,11 +21,10 @@ void add_symt_entry(SYMT *symtable, char *text, TYPE type)
     symtable->entry[symtable->num].type = type;
     symtable->entry[symtable->num].value = 0;
     symtable->num += 1;
-
 }
 
-void set_symt_value(SYMT *symtable, char *text, \
-                    /*VARIABLE_TYPE type, \*/
+void set_symt_value(SYMT *symtable,
+                    char *text, /*VARIABLE_TYPE type, \*/
                     int value)
 {
     for (int i = 0; i < symtable->num; i++) {

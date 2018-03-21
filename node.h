@@ -34,7 +34,7 @@ struct __var_decl_node {
 typedef struct __block_node BlockNode_t;
 struct __block_node {
     AST_NODE_TYPE type;
-    VarDeclNode_t *declarations;   
+    VarDeclNode_t *declarations;
     CompoundNode_t *compound_statement;
 };
 
@@ -62,7 +62,7 @@ struct __assign_node {
     VarNode_t *var;
     void *expr;
 };
-    
+
 
 typedef struct __binary_operation_node BinNode_t;
 struct __binary_operation_node {

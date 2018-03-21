@@ -4,8 +4,7 @@
 #include "token.h"
 #include "lexer.h"
 
-static void add_reserved_word(Reserved_word_table *table, \
-                              token_t token)
+static void add_reserved_word(Reserved_word_table *table, token_t token)
 {
     table->words[table->num] = token;
     table->num += 1;
@@ -15,33 +14,39 @@ static void init_reserved_word(Reserved_word_table *table)
 {
     table->num = 0;
 
-    token_t token = { .type = NONE, .value = NULL};
+    token_t token = {.type = NONE, .value = NULL};
 
     /* Add Reserved Words here */
-    token.type = PROGRAM; token.value = "PROGRAM";
-    add_reserved_word(table, token);
-   
-    token.type = VAR; token.value = "VAR";
-    add_reserved_word(table, token);
-    
-    token.type = BEGIN; token.value = "BEGIN";
+    token.type = PROGRAM;
+    token.value = "PROGRAM";
     add_reserved_word(table, token);
 
-    token.type = END; token.value = "END";
-    add_reserved_word(table, token);
-    
-    token.type = INTEGER_DECL; token.value = "INTEGER";
+    token.type = VAR;
+    token.value = "VAR";
     add_reserved_word(table, token);
 
-    token.type = REAL_DECL; token.value = "REAL";
+    token.type = BEGIN;
+    token.value = "BEGIN";
     add_reserved_word(table, token);
 
-    token.type = INTEGER_DIVIDE; token.value = "div";
+    token.type = END;
+    token.value = "END";
+    add_reserved_word(table, token);
+
+    token.type = INTEGER_DECL;
+    token.value = "INTEGER";
+    add_reserved_word(table, token);
+
+    token.type = REAL_DECL;
+    token.value = "REAL";
+    add_reserved_word(table, token);
+
+    token.type = INTEGER_DIVIDE;
+    token.value = "div";
     add_reserved_word(table, token);
 }
 
-static token_t find_reserved_word(Reserved_word_table *table, \
-                                  char *text)
+static token_t find_reserved_word(Reserved_word_table *table, char *text)
 {
     for (int i = 0; i < table->num; i++) {
         char *cmp_reserved_word = (char *) table->words[i].value;
@@ -51,7 +56,7 @@ static token_t find_reserved_word(Reserved_word_table *table, \
     }
 
     /* It's a identifier */
-    token_t token = { .type = ID, .value = strdup(text)};
+    token_t token = {.type = ID, .value = strdup(text)};
     return token;
 }
 
@@ -64,18 +69,16 @@ static int isDigit(char target)
 
 static int isAlpha(char target)
 {
-    if ((target >= 'A' && target <= 'Z') ||
-        (target >= 'a' && target <= 'z'))
+    if ((target >= 'A' && target <= 'Z') || (target >= 'a' && target <= 'z'))
         return 1;
     return 0;
 }
 
 static int isLegalCharacter(char target)
 {
-   if (isDigit(target) || isAlpha(target) || \
-       target == '_')
-       return 1;
-   return 0;
+    if (isDigit(target) || isAlpha(target) || target == '_')
+        return 1;
+    return 0;
 }
 
 static void advance(Lexer *lexer)
@@ -114,16 +117,15 @@ token_t scalar(Lexer *lexer)
         number[i++] = lexer->current_char;
         advance(lexer);
 
-        while (lexer->current_char != EOF && \
-               isDigit(lexer->current_char)) {
+        while (lexer->current_char != EOF && isDigit(lexer->current_char)) {
             number[i++] = lexer->current_char;
             advance(lexer);
         }
 
-        * (float *) ret.value = (float) atof(number);
+        *(float *) ret.value = (float) atof(number);
         ret.type = REAL_CONST;
     } else {
-        * (int *) ret.value = atoi(number);
+        *(int *) ret.value = atoi(number);
         ret.type = INTEGER_CONST;
     }
 
@@ -140,10 +142,10 @@ token_t integer(Lexer *lexer)
         advance(lexer);
     } while (lexer->current_char != EOF && isDigit(lexer->current_char));
     number[i] = '\0';
-    
+
     token_t ret = {.type = NONE, .value = NULL};
     ret.value = malloc(sizeof(int));
-    * (int *) ret.value = atoi(number);
+    *(int *) ret.value = atoi(number);
     ret.type = INTEGER_CONST;
     return ret;
 }
@@ -156,7 +158,8 @@ token_t id(Lexer *lexer)
     do {
         text[i++] = lexer->current_char;
         advance(lexer);
-    } while (lexer->current_char != EOF && isLegalCharacter(lexer->current_char));
+    } while (lexer->current_char != EOF &&
+             isLegalCharacter(lexer->current_char));
     text[i] = '\0';
 
     return find_reserved_word(&lexer->RESERVED_WORDS, text);
@@ -183,10 +186,10 @@ token_t get_next_token(Lexer *lexer)
     if (lexer->current_char != EOF) {
         if (lexer->current_char == ' ' || lexer->current_char == '\n')
             skip_whitespace_newline(lexer);
-        
+
         if (lexer->current_char == '{')
             skip_comment(lexer);
-       
+
         /* Duplicate skip_whitespace_newline is needed */
         if (lexer->current_char == ' ' || lexer->current_char == '\n')
             skip_whitespace_newline(lexer);
@@ -242,13 +245,11 @@ token_t get_next_token(Lexer *lexer)
             return ret;
         }
 
-        if (isAlpha(lexer->current_char) || \
-            lexer->current_char == '_') {
+        if (isAlpha(lexer->current_char) || lexer->current_char == '_') {
             return id(lexer);
         }
 
-        if (lexer->current_char == ':' &&
-            peek(lexer) == '=') {
+        if (lexer->current_char == ':' && peek(lexer) == '=') {
             ret.type = ASSIGN;
             advance(lexer);
             advance(lexer);

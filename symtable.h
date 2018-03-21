@@ -14,9 +14,9 @@ typedef enum {
 
 typedef struct __symbol_table_entry SYMT_ENTRY;
 struct __symbol_table_entry {
-   char *name;
-   TYPE type;
-   int value;
+    char *name;
+    TYPE type;
+    int value;
 };
 
 typedef struct __symbol_table SYMT;
@@ -26,8 +26,8 @@ struct __symbol_table {
 };
 
 void add_symt_entry(SYMT *symtable, char *text, TYPE type);
-void set_symt_value(SYMT *symtable, \
-                    char *text, /*VARIABLE_TYPE type,*/ \
+void set_symt_value(SYMT *symtable,
+                    char *text, /*VARIABLE_TYPE type,*/
                     int value);
 int get_symt_value(SYMT *symtable, char *text);
 SYMT *symt_init(void);

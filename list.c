@@ -11,8 +11,9 @@ void add_list(LIST_ENTRY **HEAD, void *data)
     }
 
     LIST_ENTRY *ptr;
-    for (ptr = *HEAD; ptr->next; ptr = ptr->next);
-    
+    for (ptr = *HEAD; ptr->next; ptr = ptr->next)
+        ;
+
     ptr->next = (LIST_ENTRY *) malloc(sizeof(LIST_ENTRY));
     ptr->next->data = data;
     ptr->next->next = NULL;

@@ -23,7 +23,7 @@ static void *program(Parser *parser)
 {
     Lexer *lexer = parser->lexer;
     match(lexer, PROGRAM);
-    
+
     ProgramNode_t *node = (ProgramNode_t *) malloc(sizeof(ProgramNode_t));
     node->type = NODE_PROGRAM;
     node->program = lexer->current_token;
@@ -31,7 +31,9 @@ static void *program(Parser *parser)
     match(lexer, ID);
 
     printf("===== Source Code =====\n");
-    printf("%s", (char *) (lexer->current_char == '\n' ? lexer->text + lexer->pos + 1 : lexer->text + lexer->pos));
+    printf("%s",
+           (char *) (lexer->current_char == '\n' ? lexer->text + lexer->pos + 1
+                                                 : lexer->text + lexer->pos));
     printf("=======================\n\n");
 
     match(lexer, SEMI);
@@ -52,7 +54,7 @@ static void *block(Parser *parser)
 static void *declarations(Parser *parser)
 {
     Lexer *lexer = parser->lexer;
-    VarDeclNode_t *node = NULL; 
+    VarDeclNode_t *node = NULL;
     LIST_ENTRY *HEAD = NULL;
 
     if (lexer->current_token.type == VAR) {
@@ -145,7 +147,7 @@ static void *statement(Parser *parser)
 
     if (lexer->current_token.type == BEGIN) {
         node = compound_statement(parser);
-    } else if (lexer->current_token.type  == ID) {
+    } else if (lexer->current_token.type == ID) {
         node = assignment_statement(parser);
     } else {
         node = empty(parser);
@@ -214,7 +216,7 @@ static void *factor(Parser *parser)
         node->type = NODE_NUM;
         node->operand = current_token;
         return node;
-    }else if (current_token.type == LPAREN) {
+    } else if (current_token.type == LPAREN) {
         match(lexer, LPAREN);
         void *node = expr(parser);
         match(lexer, RPAREN);
@@ -223,7 +225,7 @@ static void *factor(Parser *parser)
         void *node = variable(parser);
         return node;
     }
-    
+
     printf("Unavailable expression!\n");
     exit(0);
 }
@@ -233,12 +235,11 @@ static void *term(Parser *parser)
     void *node = factor(parser);
     Lexer *lexer = parser->lexer;
 
-    while (lexer->current_token.type == MULTIPLY         || \
-           lexer->current_token.type == INTEGER_DIVIDE   || \
+    while (lexer->current_token.type == MULTIPLY ||
+           lexer->current_token.type == INTEGER_DIVIDE ||
            lexer->current_token.type == POWER) {
-        
         token_t current_token = lexer->current_token;
-        
+
         if (current_token.type == MULTIPLY) {
             match(lexer, MULTIPLY);
         }
@@ -250,7 +251,7 @@ static void *term(Parser *parser)
         if (current_token.type == POWER) {
             match(lexer, POWER);
         }
-        
+
         BinNode_t *space = (BinNode_t *) malloc(sizeof(BinNode_t));
         space->type = NODE_BINARY_OP;
         space->op = current_token;
@@ -267,22 +268,21 @@ static void *expr(Parser *parser)
     Lexer *lexer = parser->lexer;
     void *node = term(parser);
 
-    while (lexer->current_token.type != NONE && \
-           lexer->current_token.type != RPAREN && \
-           lexer->current_token.type != SEMI && \
+    while (lexer->current_token.type != NONE &&
+           lexer->current_token.type != RPAREN &&
+           lexer->current_token.type != SEMI &&
            lexer->current_token.type != END) {
-        
         token_t current_token = lexer->current_token;
-        
-        switch(current_token.type) {
-            case PLUS:
-                match(lexer, PLUS);
-                break;
-            case MINUS:
-                match(lexer, MINUS);
-                break;
-            default:
-                break;
+
+        switch (current_token.type) {
+        case PLUS:
+            match(lexer, PLUS);
+            break;
+        case MINUS:
+            match(lexer, MINUS);
+            break;
+        default:
+            break;
         }
 
         BinNode_t *space = (BinNode_t *) malloc(sizeof(BinNode_t));
@@ -311,9 +311,10 @@ Parser *parser_init(const char *text)
 
 void parser_destroy(Parser *parser)
 {
-   if (parser->ast) free_node(parser->ast);
-   lexer_destroy(parser->lexer);
-   free(parser);
+    if (parser->ast)
+        free_node(parser->ast);
+    lexer_destroy(parser->lexer);
+    free(parser);
 }
 
 void parse(Parser *parser)
