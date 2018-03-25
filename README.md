@@ -1,4 +1,4 @@
-# A Pascal-Like Interpreter
+# Pascal-Esque-Interpreter (P.E.I)
 This is a simple Pascal-like interpreter referenced from [Ruslan's Blog](https://ruslanspivak.com).
 
 ## Build
